@@ -62,3 +62,12 @@ Controller part accepts and serves the requests. Model does all the data related
 | API       | Method           | Parameters|Comment  |
 | ------------- |:-------------:| :---------:|-----:|
 | /api/v1/rooms| GET | None| List all the rooms |
+
+* Dependency
+  - This project requires/tested on and above node version `v8.9.4`
+
+* Deployment
+  - Just download the `hotel-rest-server.zip` from dist
+  - Untar it in a directory
+  - Go to that directory
+  - Get the node binary path(version mentioned above) and just run `<path to node binary> src/index.js`
