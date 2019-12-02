@@ -7,8 +7,21 @@ hotel-rest-server has three entities
 * Rooms
 
 * APIS for Hotels
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
+
+| API       | Method           | Parameters|Comment  |
+| ------------- |:-------------:| :---------:|-----:|
+| /api/v1/hotels| GET | None| List all the hotels |
+| /api/v1/hotels/{id}| GET | None |Get the hotel details |
+| /api/v1/hotels/{id} | PUT| body paramters {"username":{username}} |Book a hotel room |
+
+* APIS for Users
+
+| API       | Method           | Parameters|Comment  |
+| ------------- |:-------------:| :---------:|-----:|
+| /api/v1/users| GET | None| List all the users |
+
+* APIS for Rooms
+
+| API       | Method           | Parameters|Comment  |
+| ------------- |:-------------:| :---------:|-----:|
+| /api/v1/rooms| GET | None| List all the rooms |
