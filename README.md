@@ -31,19 +31,19 @@ Controller part accepts and serves the requests. Model does all the data related
     }
   ```
   * rooms:
-  - For simplicity checkin date, departure date are not considered
-  - Those can be added in the current framework
-  ```JSON
-     {      
+    - For simplicity checkin date, departure date are not considered
+    - Those can be added in the current framework
+    ```JSON
+       {      
         "id": number, //unique
         "status": string,
         "hotel_id": number //Foregin key from hotel
-    }
-  ```
+      }
+    ```
 * APIS for Hotels
-- As per the user schema each user has bonus points. `/api/v1/hotels/{id}`can be used to book the hotel room based on user bonus points.
-- If the user has `bonus points > hotel price` then room status will be chnaged to `BOOKED` and there will be updation to the bonus points of the user.
-- If the user has `bonus points < hotel price` then room status chnages to `PENDING_APPROVAL`
+  - As per the user schema each user has bonus points. `/api/v1/hotels/{id}`can be used to book the hotel room based on user bonus points.
+  - If the user has `bonus points > hotel price` then room status will be chnaged to `BOOKED` and there will be updation to the bonus points of the user.
+  - If the user has `bonus points < hotel price` then room status chnages to `PENDING_APPROVAL`
 
 | API       | Method           | Parameters|Comment  |
 | ------------- |:-------------:| :---------:|-----:|
