@@ -10,12 +10,24 @@ router.get('/', function(req, res) {
 // Import hotel controller
 var hotelController = require('./hotelController');
 
+// Import user controller
+var userController = require('./userController');
+
+// Import room controller
+var roomController = require('./roomController');
+
 router.route('/hotels')
     .get(hotelController.index);
-
 
 router.route('/hotels/:hotelId')
     .get(hotelController.view)
     .put(hotelController.update);
+
+
+router.route('/users')
+    .get(userController.index);
+
+router.route('/rooms')
+    .get(roomController.index);
 
 module.exports = router;
