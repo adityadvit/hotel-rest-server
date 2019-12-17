@@ -45,6 +45,7 @@ module.exports.update = function update(req, res) {
     var userId = parseInt(req.params.userId);
     var userBonusPoints = parseInt(req.body.bonusPoints);
 
+    //Use async-await to avoid callback hell
     User.findOne({"id": userId}).then(function(data){
         if(data) {
             User.update({"id": userId}, {"bonus_points" : (data.bonus_points + userBonusPoints)}).then(function(data){
@@ -53,7 +54,6 @@ module.exports.update = function update(req, res) {
                     "data": "user with id=" + userId + " has been updated successfully"
                 });
             }).catch(function(err){
-                console.log("in user update",err);
                 return res.status(500)
                 .json({
                     "status": "failure",

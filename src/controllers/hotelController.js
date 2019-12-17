@@ -1,29 +1,33 @@
 
-var db = require('../models/data.js');
+//var db = require('../models/data.js');
 var Hotel = require('../models/hotel.model.js');
 
-module.exports.index =  function(req, res) {
-   Hotel.find().then(function(hotels){
+module.exports.index =  async function(req, res) {
+    try {
+        console.log("In index try");
+        var hotels = await Hotel.get();
         res.json({
             "status": "success",
             "data": hotels
         });
-   }).catch(function(err) {
+    } catch (error) {
+        console.log("In getHotels", error);
         res.status(500)
         .json({
             "status": "failure",
             "data": null
         });
-   });
+    }
 };
 
-module.exports.view = function view(req, res) {
+module.exports.view = async function view(req, res) {
     var hotelId = parseInt(req.params.hotelId);
-    Hotel.findOne({"id": hotelId}).then(function(data){
-        if(data) {
+    try {
+        var hotel = await Hotel.getById(hotelId);
+        if(hotel) {
             res.json({
                 "status": "success",
-                "data": data
+                "data": hotel
             });
         } else {
             res.status(404)
@@ -32,13 +36,13 @@ module.exports.view = function view(req, res) {
                 "message" : "Hotel with id=" + hotelId + " not found"
             });    
         }
-    }).catch(function(err) {
+    } catch (error) {
         res.status(500)
         .json({
             "status": "failure",
             "data": null
         });
-    });
+    }
 };
 
 module.exports.update = function(req, res) {
