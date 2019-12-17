@@ -65,7 +65,13 @@ module.exports.update = function(req, res) {
     }
     
     //var _hotelToBeBooked = db.getHotelById(hotelId);
-    var _hotelToBeBooked = Hotel.find()
+    var _hotelToBeBooked = null;
+    try {
+        _hotelToBeBooked = await Hotel.getById(hotelId);
+    } catch (error) {
+        console.log("Hotel with id=" + hotelId + " not found");
+    }
+    
     if(!_hotelToBeBooked){
         return res.status(404)
         .json({
