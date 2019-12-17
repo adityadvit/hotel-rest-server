@@ -24,8 +24,13 @@ router.route('/hotels/:hotelId')
     .put(hotelController.update);
 
 
+router.route('/users/:userId')
+    .get(userController.view)
+    .put(userController.update);
+
 router.route('/users')
     .get(userController.index);
+
 
 router.route('/rooms')
     .get(roomController.index);

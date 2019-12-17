@@ -6,7 +6,6 @@ db.users = [
         "username" : "aditya",
         "phone" : 1234,
         "email" : "aditya1234@domain.com",
-        "bookings": [],
         "bonus_points" : 1500,
         "gender": "M"
     },
@@ -15,7 +14,6 @@ db.users = [
         "username" : "ram",
         "phone" : 4321,
         "email" : "ram4321@domain.com",
-        "bookings": [],
         "bonus_points" : 2500,
         "gender": "M"
     },
@@ -24,7 +22,6 @@ db.users = [
         "username" : "radha",
         "mobile" : 6789,
         "email" : "radha6789",
-        "bookings": [],
         "bonus_points" : 500,
         "gender": "F"
     }

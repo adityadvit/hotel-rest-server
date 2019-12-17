@@ -1,29 +1,45 @@
 
 var db = require('../models/data.js');
+var Hotel = require('../models/hotel.model.js');
 
 module.exports.index =  function(req, res) {
-    res.json({
-        "status": "success",
-        "data": db.getHotels()
-    });
-}
+   Hotel.find().then(function(hotels){
+        res.json({
+            "status": "success",
+            "data": hotels
+        });
+   }).catch(function(err) {
+        res.status(500)
+        .json({
+            "status": "failure",
+            "data": null
+        });
+   });
+};
 
 module.exports.view = function view(req, res) {
     var hotelId = parseInt(req.params.hotelId);
-    var hotel = db.getHotelById(hotelId);
-    if(hotel){
-        res.json({
-            "status": "success",
-            data: hotel
-        });
-    } else {
-        res.status(404)
+    Hotel.findOne({"id": hotelId}).then(function(data){
+        if(data) {
+            res.json({
+                "status": "success",
+                "data": data
+            });
+        } else {
+            res.status(404)
             .json({
                 "status" : "failure",
                 "message" : "Hotel with id=" + hotelId + " not found"
-            });
-    }
-}
+            });    
+        }
+    }).catch(function(err) {
+        res.status(500)
+        .json({
+            "status": "failure",
+            "data": null
+        });
+    });
+};
 
 module.exports.update = function(req, res) {
     var hotelId = parseInt(req.params.hotelId);
@@ -44,7 +60,8 @@ module.exports.update = function(req, res) {
         });    
     }
     
-    var _hotelToBeBooked = db.getHotelById(hotelId);
+    //var _hotelToBeBooked = db.getHotelById(hotelId);
+    var _hotelToBeBooked = Hotel.find()
     if(!_hotelToBeBooked){
         return res.status(404)
         .json({
