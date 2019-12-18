@@ -44,7 +44,7 @@ module.exports.updateRoomById= async function(rId, data){
         new: true
       });
       return doc;
-  }catch(err) {
+  } catch(err) {
       throw new Error(err);
   }
 }

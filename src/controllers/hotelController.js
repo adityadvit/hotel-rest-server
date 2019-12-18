@@ -173,7 +173,6 @@ module.exports.update = async function(req, res) {
             });
         }
 
-        console.log("currentuser is", _currentUser);
         res.json({
             "result": "Pending approval",
             "message": _currentUser.username + " has to add" + (_currentUser.bonus_points) + " bonus points to book the room with id=" + _roomToBeBooked.id + 
