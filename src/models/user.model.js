@@ -11,8 +11,6 @@ var userSchema = new Schema({
     gender: String,
 }, {collection: 'users'});
 
-//module.exports = mongoose.model('user', userSchema);
-
 var User = mongoose.model('user', userSchema);
 
 module.exports.get = async function(){

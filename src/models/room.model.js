@@ -8,8 +8,6 @@ var roomSchema = new Schema({
     hotel_id: Number
 }, {collection: 'rooms'});
 
-//module.exports = mongoose.model('room', roomSchema);
-
 var Room = mongoose.model('room', roomSchema);
 
 module.exports.get = async function(){
@@ -36,5 +34,17 @@ module.exports.getRoomsWithStatusInaHotel = async function(status, id) {
     return rooms;
   } catch(err) {
     throw new Error(err);   
+  }
+}
+
+module.exports.updateRoomById= async function(rId, data){
+  try {
+      var filter = {"id": rId}; //Rooms are unique
+      var doc = await Room.findOneAndUpdate(filter, data, {
+        new: true
+      });
+      return doc;
+  }catch(err) {
+      throw new Error(err);
   }
 }

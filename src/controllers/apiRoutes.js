@@ -23,16 +23,17 @@ router.route('/hotels/:hotelId')
     .get(hotelController.view)
     .put(hotelController.update);
 
+router.route('/users')
+    .get(userController.index);
 
 router.route('/users/:userId')
     .get(userController.view)
     .put(userController.update);
 
-router.route('/users')
-    .get(userController.index);
-
-
 router.route('/rooms')
     .get(roomController.index);
+
+router.route('/rooms/:roomId')
+    .get(roomController.view);
 
 module.exports = router;

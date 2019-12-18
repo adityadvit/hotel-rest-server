@@ -1,7 +1,7 @@
 
-//var db = require('../models/data.js');
 var Hotel = require('../models/hotel.model.js');
 var User = require('../models/user.model.js');
+var Room = require('../models/room.model.js');
 
 module.exports.index =  async function(req, res) {
     try {
@@ -65,7 +65,6 @@ module.exports.update = async function(req, res) {
         });    
     }
     
-    //var _hotelToBeBooked = db.getHotelById(hotelId);
     var _hotelToBeBooked = null;
     try {
         _hotelToBeBooked = await Hotel.getById(hotelId);
@@ -81,7 +80,6 @@ module.exports.update = async function(req, res) {
         });
     }
     
-    //var _currentUser = db.getUserByUserName(userName);
     var _currentUser = null;
     try {
         _currentUser = await User.getByUserName(userName);
@@ -97,15 +95,12 @@ module.exports.update = async function(req, res) {
         });
     }
     
-    //var _availableRooms = db.getRoomsWithStatusInHotelWithId(db.roomStatus.available, hotelId);
     var _availableRooms = [];
     try {
-        _availableRooms = await Room.getRoomsWithStatusInaHotel("available", hotelId);
+        _availableRooms = await Room.getRoomsWithStatusInaHotel("AVAILABLE", hotelId);
     } catch (error) {
-        console.log("user with username=" + userName + " not found");
+        console.log("rooms not available in the hotel with id=" + hotelId, error);
     }
-    
-    console.log("available rooms are", _availableRooms);
     
     if(!_availableRooms.length){
         return res.status(428) //precondition required
@@ -120,31 +115,30 @@ module.exports.update = async function(req, res) {
     var _roomToBeBooked = _availableRooms[0];
     
     if(_userBonusPoint >= _hotelPrice){
-        console.log("coming in first if");
-        //update user bonus points
-        var result = db.updateUserByUserName(_currentUser.username, "bonus_points",(_userBonusPoint - _hotelPrice));
-        if(!result) {
+        try {
+            var data = {"bonus_points": _userBonusPoint - _hotelPrice}
+            var result = await User.updateUserByUserName(_currentUser.username, data);
+        } catch (error) {
+            console.log("User bonus points update failed with error= ",error);
             return res.status(500) 
               .json({
                 "status": "Booking failed",
                 "message": "Not able to update bonus points for user " + _currentUser.username
             });
         }
-        
-        //update the room status to BOOKED
-        var result = db.updateRoomByRoomId(_roomToBeBooked.id, "status", db.roomStatus.booked);
-        if(!result) {
+    
+        try {
+            var data = {"status": "BOOKED"}
+            var result = await Room.updateRoomById(_roomToBeBooked.id, data);
+        } catch (error) {
+            console.log("Not able to book the room with id=" + _roomToBeBooked.id + "in hotel named " + _hotelToBeBooked.name)
             return res.status(500) 
               .json({
                 "status": "Booking failed",
                 "message": "Not able to book the room with id=" + _roomToBeBooked.id + "in hotel named " + _hotelToBeBooked.name
             });
         }
-        
-        //console.log("users are",db.getUsers());
-        //console.log("hotels are",db.getHotels());
-        //console.log("rooms are", db.getRooms());
-        
+                
         res.json({
             "result": "Booking successful",
             "message": _currentUser.username + " has successfully booked the room with id=" + _roomToBeBooked.id + 
@@ -153,32 +147,36 @@ module.exports.update = async function(req, res) {
         
     } else {
         //update user bonus points.Might be negative
-        var result = db.updateUserByUserName(_currentUser.username, "bonus_points",(_userBonusPoint - _hotelPrice));
-        if(!result) {
+
+       try {
+            var data = {"bonus_points": (_userBonusPoint - _hotelPrice)}
+            var result = await User.updateUserByUserName(_currentUser.username, data);
+        } catch (error) {
+            console.log("User bonus points update failed with error= ",error);
             return res.status(500) 
-              .json({
+            .json({
                 "status": "Booking failed",
                 "message": "Not able to update bonus points for user " + _currentUser.username
             });
         }
-        
-        //update the room status to BOOKED
-        var result = db.updateRoomByRoomId(_roomToBeBooked.id, "status", db.roomStatus.pending_approval);
-        if(!result) {
+
+        //update the room status to PENDING_APPROVAL
+       try {
+            var data = {"status": "PENDING_APPROVAL"};
+            var result = await Room.updateRoomById(_roomToBeBooked.id, data);
+        } catch (error) {
+            console.log("Not able to book the room with id=" + _roomToBeBooked.id + "in hotel named " + _hotelToBeBooked.name)
             return res.status(500) 
-              .json({
+            .json({
                 "status": "Booking failed",
                 "message": "Not able to book the room with id=" + _roomToBeBooked.id + "in hotel named " + _hotelToBeBooked.name
             });
         }
-        
-        //console.log("users are",db.getUsers());
-        //console.log("hotels are",db.getHotels());
-        //console.log("rooms are", db.getRooms());
-        
+
+        console.log("currentuser is", _currentUser);
         res.json({
             "result": "Pending approval",
-            "message": _currentUser.username + " has to add" + _currentUser.bonus_points + " bonus points to book the room with id=" + _roomToBeBooked.id + 
+            "message": _currentUser.username + " has to add" + (_currentUser.bonus_points) + " bonus points to book the room with id=" + _roomToBeBooked.id + 
                 " in hotel named " + _hotelToBeBooked.name
         });
     }

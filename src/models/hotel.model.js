@@ -9,8 +9,6 @@ var hotelSchema = new Schema({
     address: String
 }, {collection: 'hotels'});
 
-//module.exports = mongoose.model('hotel', hotelSchema);
-
 var Hotel = mongoose.model('hotel', hotelSchema);
 
 module.exports.get = async function(){

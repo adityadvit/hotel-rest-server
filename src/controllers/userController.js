@@ -80,39 +80,40 @@ module.exports.view = async function view(req, res) {
     }
 };
 
-module.exports.update = function update(req, res) {
+module.exports.update = async function update(req, res) {
     var userId = parseInt(req.params.userId);
-    var userBonusPoints = parseInt(req.body.bonusPoints);
-
-    //Use async-await to avoid callback hell
-    User.findOne({"id": userId}).then(function(data){
-        if(data) {
-            User.update({"id": userId}, {"bonus_points" : (data.bonus_points + userBonusPoints)}).then(function(data){
-                return res.json({
-                    "status": "success",
-                    "data": "user with id=" + userId + " has been updated successfully"
-                });
-            }).catch(function(err){
-                return res.status(500)
-                .json({
-                    "status": "failure",
-                    "data": "user with id=" + userId + " updation failed"
-                });
-            });
-        } else {
-            res.status(404)
+    var userBonusPoints = parseInt(req.body.bonus_points);
+    var user = null;
+    try {
+        user = await User.getById(userId);
+        if(!user) {
+            return res.status(404)
             .json({
                 "status" : "failure",
                 "message" : "user with id=" + userId + " not found"
             });    
         }
-        
-    }).catch(function(err) {
-        res.status(500)
+    } catch (error) {
+        return res.status(500)
         .json({
             "status": "failure",
             "data": null
         });
-    });
-    
+    }
+
+    try {
+        var data = {"bonus_points": (user.bonus_points + userBonusPoints)};
+        var result = await User.updateUserByUserName(user.username, data);
+        return res.json({
+            "status": "success",
+            "data": data
+        });
+    } catch (error) {
+        console.log("User update failed with error= ",error);
+        return res.status(500) 
+          .json({
+            "status": "User update failed",
+            "message": "User updated failed for user " + user.username
+        });
+    }
 };

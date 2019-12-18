@@ -1,4 +1,5 @@
-
+//Not used anymore
+/*
 var db = {};
 db.users = [
     {   
@@ -180,3 +181,4 @@ module.exports = {
       return false;
   }
 };
+*/
