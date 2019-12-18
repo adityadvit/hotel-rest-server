@@ -1,6 +1,7 @@
 
 //var db = require('../models/data.js');
 var Hotel = require('../models/hotel.model.js');
+var User = require('../models/user.model.js');
 
 module.exports.index =  async function(req, res) {
     try {
@@ -45,7 +46,7 @@ module.exports.view = async function view(req, res) {
     }
 };
 
-module.exports.update = function(req, res) {
+module.exports.update = async function(req, res) {
     var hotelId = parseInt(req.params.hotelId);
     var userName = req.body.username;
     
@@ -80,7 +81,14 @@ module.exports.update = function(req, res) {
         });
     }
     
-    var _currentUser = db.getUserByUserName(userName);
+    //var _currentUser = db.getUserByUserName(userName);
+    var _currentUser = null;
+    try {
+        _currentUser = await User.getByUserName(userName);
+    } catch (error) {
+        console.log("user with username=" + userName + " not found");
+    }
+
     if(!_currentUser) {
         return res.status(404)
         .json({
@@ -89,11 +97,17 @@ module.exports.update = function(req, res) {
         });
     }
     
-    var _availebeRooms = db.getRoomsWithStatusInHotelWithId(db.roomStatus.available, hotelId);
+    //var _availableRooms = db.getRoomsWithStatusInHotelWithId(db.roomStatus.available, hotelId);
+    var _availableRooms = [];
+    try {
+        _availableRooms = await Room.getRoomsWithStatusInaHotel("available", hotelId);
+    } catch (error) {
+        console.log("user with username=" + userName + " not found");
+    }
     
-    console.log("available rooms are", _availebeRooms);
+    console.log("available rooms are", _availableRooms);
     
-    if(!_availebeRooms.length){
+    if(!_availableRooms.length){
         return res.status(428) //precondition required
         .json({
             "status": "failure",
@@ -103,7 +117,7 @@ module.exports.update = function(req, res) {
     
     var _hotelPrice = _hotelToBeBooked.room_price;
     var _userBonusPoint = _currentUser.bonus_points;
-    var _roomToBeBooked = _availebeRooms[0];
+    var _roomToBeBooked = _availableRooms[0];
     
     if(_userBonusPoint >= _hotelPrice){
         console.log("coming in first if");
